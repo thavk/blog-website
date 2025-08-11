@@ -1,15 +1,17 @@
-// 1. Load Express library
-const express = require('express');
+import express from 'express';
+import pool from './config/db.js';
 
-// 2. Create a new Express app (your server)
 const app = express();
 
-// 3. Define a route /ping that sends back JSON { message: "pong" }
-app.get('/ping', (req, res) => {
-  res.json({ message: "pong" });
+app.get('/test-db', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT NOW()');
+        res.json({ time: result.rows[0].now });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Database connection failed' });
+    }
 });
-
-// 4. Start listening on port 5000
 
 app.listen(5000, () => {
   console.log('Server running on http://localhost:5000');
