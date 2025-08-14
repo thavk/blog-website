@@ -10,6 +10,10 @@ import Button from '@mui/joy/Button';
 import Link from '@mui/joy/Link';
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
+import { login } from '../components/auth-handlers.js';
+import { Login } from '../api/auth/auth.js';
+import { Outlet } from "react-router";
+
 
 function ModeToggle() {
   const { mode, setMode } = useColorScheme();
@@ -22,6 +26,7 @@ function ModeToggle() {
     setMounted(true);
 
   }, []);
+
 
   if (!mounted) {
     return <Button variant="soft">Change mode</Button>;
@@ -68,40 +73,8 @@ export default function LoginPage(props: any) {
           variant="outlined"
         >
           <div>
-            <Typography level="h4" component="h1">
-              <b>Welcome!</b>
-
-            </Typography>
-            <Typography level="body-sm">Sign in to continue.</Typography>
+                        <Outlet/>
           </div>
-          <FormControl>
-            <FormLabel>Email</FormLabel>
-            <Input
-              // html input attribute
-              name="email"
-              type="email"
-              placeholder="johndoe@email.com"
-            />
-
-          </FormControl>
-          <FormControl>
-            <FormLabel>Password</FormLabel>
-            <Input
-
-              // html input attribute
-              name="password"
-              type="password"
-
-              placeholder="password"
-            />
-          </FormControl>
-          <Button sx={{ mt: 1 /* margin top */ }}>Log in</Button>
-          <Typography
-            endDecorator={<Link href="/sign-up">Sign up</Link>}
-            sx={{ fontSize: 'sm', alignSelf: 'center' }}
-          >
-            Don&apos;t have an account?
-          </Typography>
         </Sheet>
       </CssVarsProvider>
     </main>

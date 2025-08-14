@@ -3,6 +3,8 @@ import { CssVarsProvider } from '@mui/joy/styles';
 import Sheet from '@mui/joy/Sheet';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/login-page';
+import { LoginComponent } from './features/Login';
+import { SignUpComponent } from './features/Register';
 
 function App() {
     const [message, setMessage] = useState('Loading...');
@@ -20,7 +22,10 @@ function App() {
                 <Router>
                     <Routes>
                         <Route path='/' element={<h1>{message}</h1>}/>
-                        <Route path='/login' element={<LoginPage/>}/>
+                        <Route path='/login' element={<LoginPage/>}>
+                            <Route index element={<LoginComponent/>}/>
+                            <Route path='/login/sign-up' element={<SignUpComponent/>}/>
+                        </Route>
                     </Routes>
                 </Router>
             </Sheet>

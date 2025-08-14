@@ -1,18 +1,16 @@
 import express from 'express';
-import pool from './config/db.js';
+import authRoutes from './routes/auth.js';
+import cors from 'cors';
 
 const app = express();
 
-app.get('/test-db', async (req, res) => {
-    try {
-        const result = await pool.query('SELECT NOW()');
-        res.json({ time: result.rows[0].now });
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ error: 'Database connection failed' });
-    }
-});
 
-app.listen(5000, () => {
+app.use(express.json());
+
+app.use(cors());
+
+app.use('/auth', authRoutes);
+
+app.listen(5000, '0.0.0.0', () => {
   console.log('Server running on http://localhost:5000');
 });
