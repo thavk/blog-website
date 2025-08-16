@@ -1,10 +1,10 @@
 import pool from '../config/db.js';
+import bcrypt from 'bcrypt';
+
+
 
 export async function loginHandler(req, res) {
     const { email, password } = req.body;
-
-    console.log(req.body);
-
 
     if (!email || !password) {
         return res.status(400).json({ error: 'Missing username or password' });
@@ -20,11 +20,11 @@ export async function loginHandler(req, res) {
 
         const user = result.rows[0];
 
-        if (user.password !== password) {
+        const isValid = await bcrypt.compare(password, user.password);
+
+        if (!isValid) {
             return res.status(401).json({ error: 'Invalid credentials' });
         };
-
-        console.log(res.json({ message: 'Login Successful', userId: user.user_id, username: user.username }));
 
 
         return res.json({ message: 'Login Successful', userId: user.user_id, username: user.username });
@@ -49,12 +49,16 @@ export async function registerHandler(req, res) {
             return res.status(400).json({ error: 'Email already exists' });
         };
 
-        //const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-        await pool.query('INSERT INTO users (email, password, username) VALUES ($1, $2, $3)', [email, password, username]);
-        const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+        const result = await pool.query(
+            `INSERT INTO users (email, password, username)
+             VALUES ($1, $2, $3)
+             RETURNING user_id, username`,
+            [email, hashedPassword, username]
+        );
 
-        console.log(res.json({ message: 'Register Successful', userId: result.rows[0].user_id, username: result.rows[0].username }));
+
         return res.json({ message: 'Register Successful', userId: result.rows[0].user_id, username: result.rows[0].username });
     } catch (error) {
         console.error('Register Error:', error);
