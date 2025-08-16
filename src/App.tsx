@@ -9,13 +9,6 @@ import { SignUpComponent } from './features/Register';
 function App() {
     const [message, setMessage] = useState('Loading...');
 
-    useEffect(() => {
-        fetch('http://localhost:5432')
-            .then(res => res.text())
-            .then(setMessage)
-            .catch(() => setMessage('Failed to connect to backend.'));
-    }, []);
-
     return (
         <CssVarsProvider>
             <Sheet style={{ padding: '2rem', fontFamily: 'sans-serif' }}>

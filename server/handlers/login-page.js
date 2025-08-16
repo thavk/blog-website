@@ -42,19 +42,19 @@ export async function registerHandler(req, res) {
     if (!email || !password || !username) {
         return res.status(400).json({ error: 'Missing username or password' });
     };
-    let result;
+
     try {
-        result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-        if (result.rows.length > 0) {
+        const resp = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+        if (resp.rows.length > 0) {
             return res.status(400).json({ error: 'Email already exists' });
         };
 
         //const hashedPassword = await bcrypt.hash(password, 10);
 
-        console.log('it works');
-        await pool.query('INSERT INTO users (email, password, username) VALUES ($1, $2, $3)'
-            'SELECT * FROM users WHERE email = $1', [email, password, username]);
+        await pool.query('INSERT INTO users (email, password, username) VALUES ($1, $2, $3)', [email, password, username]);
+        const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
 
+        console.log(res.json({ message: 'Register Successful', userId: result.rows[0].user_id, username: result.rows[0].username }));
         return res.json({ message: 'Register Successful', userId: result.rows[0].user_id, username: result.rows[0].username });
     } catch (error) {
         console.error('Register Error:', error);

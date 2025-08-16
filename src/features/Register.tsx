@@ -15,11 +15,18 @@ export const SignUpComponent = () => {
     const [password, setPassword] = React.useState('');
     const [username, setUsername] = React.useState('');
     const [passwordConfirm, setPasswordConfirm] = React.useState('');
+    const [errorMessage, setErrorMessage] = React.useState('');
 
     const handleSignUp = async (email: string, username: string, password: string, passwordConfirm: string): Promise<Register> => {
-        const response = await register(email, username, password);
-        console.log(response);
-        return response;
+        try {
+            const response = await register(email, username, password);
+            console.log(response);
+            return response;
+        } catch (error: any) {
+            console.error(error.response.data.error);
+            setErrorMessage(error.response.data.error);
+            return error;
+        };
     };
 
 
