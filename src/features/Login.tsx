@@ -13,17 +13,41 @@ import { Login } from '../api/auth/auth';
 export const LoginComponent = () => {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
-
+    const [errorMessage, setErrorMessage] = React.useState('');
+    const [error, setError] = React.useState(false);
 
     const handleLogin = async (email: string | undefined, password: string): Promise<Login> => {
         const response = await login(email, password);
-        console.log(response);
+
+        if (response.isError) {
+            setError(response.isError);
+            setErrorMessage(response.error);
+        };
+
         return response;
     };
 
 
+
     return (
         <div>
+            {error ?
+                <div style={{
+                    background : 'rgba(255, 0, 0, 0.2)',
+                    color : 'rgba(255, 255, 255, 0.9)',
+                    padding: '10px',
+                    fontSize : '20px',
+                    borderRadius : '9px',
+                    height : '50px',
+                    display : 'flex',
+                    alignItems : 'center',
+                    justifyContent : 'center',
+                    marginBottom : '15px',
+                }}
+                >
+                    <h3>{errorMessage}</h3>
+                </div>
+            : null}
             <Typography level="h4" component="h1">
                 <b>Welcome!</b>
 
