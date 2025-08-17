@@ -1,7 +1,12 @@
 import pool from '../config/db.js';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
-
+function generateToken(userId) {
+    return jwt.sign({ userId }, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRES_IN,
+    });
+};
 
 export async function loginHandler(req, res) {
     const { email, password } = req.body;
@@ -26,8 +31,9 @@ export async function loginHandler(req, res) {
             return res.status(401).json({ error: 'Invalid credentials' });
         };
 
+        const token = generateToken(user.user_id);
 
-        return res.json({ message: 'Login Successful', userId: user.user_id, username: user.username });
+        return res.json({ message: 'Login Successful', userId: user.user_id, username: user.username, token: token });
     } catch (error) {
         console.error('Login Error:', error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -57,7 +63,6 @@ export async function registerHandler(req, res) {
              RETURNING user_id, username`,
             [email, hashedPassword, username]
         );
-
 
         return res.json({ message: 'Register Successful', userId: result.rows[0].user_id, username: result.rows[0].username });
     } catch (error) {
