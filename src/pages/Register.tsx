@@ -6,7 +6,7 @@ import Input from '@mui/joy/Input';
 import Button from '@mui/joy/Button';
 import { register } from '../components/auth-handlers.js';
 import { Register } from '../api/auth/auth';
-
+import { useNavigate } from 'react-router-dom';
 
 
 export const SignUpComponent = () => {
@@ -16,6 +16,7 @@ export const SignUpComponent = () => {
     const [passwordConfirm, setPasswordConfirm] = React.useState('');
     const [errorMessage, setErrorMessage] = React.useState('');
     const [error, setError] = React.useState(false);
+    const navigate = useNavigate();
 
     const handleSignUp = async (email: string, username: string, password: string, passwordConfirm: string): Promise<Register> => {
             const response = await register(email, username, password);
@@ -26,6 +27,7 @@ export const SignUpComponent = () => {
                 return response;
             };
 
+            navigate('/login');
             return response;
     };
 
