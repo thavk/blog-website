@@ -13,7 +13,10 @@ export const BlogCard = (props: any) => {
     );
 
     return (
-        <Card variant="outlined" sx={{ width: 'auto', maxWidth: 800, minWidth: 150, mb: 2 }}>
+        <Card variant="outlined" sx={{
+            width: '95%',
+            maxWidth: "95%",
+        }}>
             <CardContent>
                 <Typography component="span" sx={{ color: 'text.secondary', fontSize: 14 }}>
                     Word of the Day

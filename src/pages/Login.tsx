@@ -31,13 +31,8 @@ export const LoginComponent = () => {
 
     return (
         <div style={{
-            width: 'auto',
-            maxWidth: 300,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 2,
-            margin: 5,
-            alignSelf: 'center',
+            width: 'min(280px, 90vw)',
+            margin: 'auto',
         }}>
             {error ?
                 <div style={{

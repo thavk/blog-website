@@ -33,7 +33,7 @@ function ModeToggle() {
                 setMode(newMode);
 
             }}
-            sx={{ width: 'max-content' }}
+            sx={{ width: 'max-content', marginBottom : '15px' }}
         >
             <Option value="system">System</Option>
             <Option value="light">Light</Option>
@@ -52,24 +52,16 @@ export default function HomePage(props: any) {
                 <CssBaseline />
                 <Sheet
                     sx={{
-                        width: 'fit-content',
-                        maxWidth: '95%',
-                        mx: 'auto', // margin left & right
-                        my: 4, // margin top & bottom
-                        py: 3, // padding top & bottom
-                        px: 1, // padding left & right
-                        display: 'flex',
-                        flexDirection: 'column',
-                        fitContent: 'fit-content',
-                        gap: 2,
-                        borderRadius: 'sm',
-                        boxShadow: 'md',
+                        width: 'max-content',
+                        maxWidth: '95vw',
+                        mx: 'auto',
+                        alignSelf: 'center',
+                        px: 2,
+                        py: 3,
                     }}
                     variant="outlined"
                 >
-                    <div>
-                        <Outlet/>
-                    </div>
+                    <Outlet/>
                 </Sheet>
             </CssVarsProvider>
         </main>

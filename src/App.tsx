@@ -10,7 +10,7 @@ function App() {
 
     return (
         <CssVarsProvider>
-            <Sheet style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+            <Sheet style={{ padding: '2rem', fontFamily: 'sans-serif', maxWidth: '95vw' }}>
                 <Router>
                     <Routes>
                         <Route path='/' element={<HomePage/>}>

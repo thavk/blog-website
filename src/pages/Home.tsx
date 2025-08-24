@@ -6,9 +6,11 @@ import { BlogCard } from '../features/blog-display';
 export const HomeComponent = () => {
     return (
         <div style={{
+            width: 'min(1200px, 90vw)',
+            alignItems: 'center',
+            gap: 16,
             display: 'flex',
             flexDirection: 'column',
-            gap: 2,
         }}>
             <BlogCard />
             <BlogCard />
