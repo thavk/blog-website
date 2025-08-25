@@ -3,9 +3,11 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 function generateToken(userId) {
-    return jwt.sign({ userId }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN,
-    });
+    return jwt.sign(
+        { userId },
+        process.env.JWT_SECRET,
+        { expiresIn: process.env.JWT_EXPIRES_IN},
+    );
 };
 
 export async function loginHandler(req, res) {
@@ -33,7 +35,14 @@ export async function loginHandler(req, res) {
 
         const token = generateToken(user.user_id);
 
-        return res.json({ message: 'Login Successful', userId: user.user_id, username: user.username, token: token });
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 60 * 60 * 1000,
+        });
+
+        return res.json({ message: 'Login Successful', userId: user.user_id, username: user.username });
     } catch (error) {
         console.error('Login Error:', error);
         res.status(500).json({ error: 'Internal Server Error' });

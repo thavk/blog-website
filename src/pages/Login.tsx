@@ -7,7 +7,7 @@ import Button from '@mui/joy/Button';
 import Link from '@mui/joy/Link';
 import { login } from '../components/auth-handlers.js';
 import { Login } from '../api/auth/auth';
-
+import { useNavigate } from 'react-router-dom';
 
 
 export const LoginComponent = () => {
@@ -15,6 +15,7 @@ export const LoginComponent = () => {
     const [password, setPassword] = React.useState('');
     const [errorMessage, setErrorMessage] = React.useState('');
     const [error, setError] = React.useState(false);
+    const navigate = useNavigate();
 
     const handleLogin = async (email: string | undefined, password: string): Promise<Login> => {
         const response = await login(email, password);
@@ -23,6 +24,8 @@ export const LoginComponent = () => {
             setError(response.isError);
             setErrorMessage(response.error);
         };
+
+        navigate('/');
 
         return response;
     };

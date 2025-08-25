@@ -3,9 +3,12 @@ import axiosInstance from '../api/axiosInstance.js';
 export async function login(email, password) {
 
     try {
-        const response = await axiosInstance.post('/auth/login', { email, password });
+        const response = await axiosInstance.post(
+            '/auth/login',
+            { email, password },
+            { withCredentials: true }
+        );
 
-        localStorage.setItem('token', response.data.token);
         return response.data;
     } catch (error) {
         const err = {isError: true, error: error.response?.data?.error || 'Something went wrong'};

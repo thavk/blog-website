@@ -1,14 +1,26 @@
 import pool from '../config/db.js';
+import jwt from 'jsonwebtoken';
 
 export async function blogsHandler(req, res) {
-    const { userId } = req.user;
 
     try {
-        const result = await pool.query(SELECT * FROM blogs WHERE user_id = $1, [userId]);
+        const token = req.cookies.token;
+
+        if (!token) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        };
+
+        try {
+            jwt.verify(token, process.env.JWT_SECRET);
+        } catch (error) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        };
+
+        const result = await pool.query('SELECT * FROM blogs');
+
         return res.json(result.rows);
     } catch (error) {
-        console.error('Blogs Error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error' });
     };
 };
 
