@@ -1,14 +1,5 @@
 import pool from '../config/db.js';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-
-function generateToken(userId) {
-    return jwt.sign(
-        { userId },
-        process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_EXPIRES_IN},
-    );
-};
 
 export async function loginHandler(req, res) {
     const { email, password } = req.body;
@@ -33,14 +24,6 @@ export async function loginHandler(req, res) {
             return res.status(401).json({ error: 'Invalid credentials' });
         };
 
-        const token = generateToken(user.user_id);
-
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 60 * 60 * 1000,
-        });
 
         return res.json({ message: 'Login Successful', userId: user.user_id, username: user.username });
     } catch (error) {
