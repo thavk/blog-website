@@ -4,7 +4,7 @@ export async function login(email, password) {
 
     try {
         const response = await axiosInstance.post(
-            '/auth/login',
+            '/api/login',
             { email, password },
             { withCredentials: true }
         );
@@ -21,7 +21,7 @@ export async function login(email, password) {
 export async function register(email, username, password) {
 
     try {
-        const response = await axiosInstance.post('/auth/register', { email, username, password });
+        const response = await axiosInstance.post('/api/register', { email, username, password });
 
         return response.data;
     } catch (error) {

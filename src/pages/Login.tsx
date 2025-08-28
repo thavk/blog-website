@@ -11,25 +11,53 @@ import { useNavigate } from 'react-router-dom';
 
 
 export const LoginComponent = () => {
-    const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
+    const [userOrEmail, setUserOrEmail] = React.useState('');
     const [errorMessage, setErrorMessage] = React.useState('');
     const [error, setError] = React.useState(false);
+    const [capsLockOn, setCapsLockOn] = React.useState(false);
     const navigate = useNavigate();
 
-    const handleLogin = async (email: string | undefined, password: string): Promise<Login> => {
-        const response = await login(email, password);
+    const inputValidation = (user: string, pwd: string): boolean => {
+        if (!user || !pwd) {
+            setError(true);
+            setErrorMessage('Missing username/email or password');
+            return false;
+        } else if (pwd.length < 8 || pwd.length > 60) {
+            setError(true);
+            setErrorMessage('Password must be between 8 and 60 characters');
+            return false;
+        } else if (user.length > 254) {
+            setError(true);
+            setErrorMessage('Invalid input');
+            return false;
+        };
+
+        return true;
+    };
+
+    const handleLogin = async (): Promise<Login | undefined> => {
+        const trimmedUser = userOrEmail.trim();
+        const trimmedPwd = password.trim();
+
+        const isValid = inputValidation(trimmedUser, trimmedPwd);
+
+        if (!isValid) {
+            return;
+        };
+
+        const response = await login(trimmedUser, trimmedPwd);
 
         if (response.isError) {
             setError(response.isError);
             setErrorMessage(response.error);
+            return;
         };
 
         navigate('/');
 
         return response;
     };
-
 
 
     return (
@@ -62,30 +90,33 @@ export const LoginComponent = () => {
             </Typography>
             <Typography level="body-sm">Sign in to continue.</Typography>
             <FormControl>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Email or Username</FormLabel>
                 <Input
                     // html input attribute
-                    name="email"
-                    type="email"
-                    placeholder="johndoe@email.com"
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
+                    name="userOrEmail"
+                    type="text"
+                    placeholder="username"
+                    value={userOrEmail}
+                    onChange={(event) => setUserOrEmail(event.target.value)}
                 />
 
             </FormControl>
             <FormControl>
                 <FormLabel>Password</FormLabel>
                 <Input
-
                     // html input attribute
                     name="password"
                     type="password"
                     placeholder="password"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
+                    onKeyUp={(e) => {
+                        setCapsLockOn(e.getModifierState("CapsLock"));
+                    }}
                 />
+                {capsLockOn && <p style={{ color: 'orange', fontSize: '12px', padding: 0, margin: 0 }}>Caps Lock is ON</p>}
             </FormControl>
-            <Button onClick={() => handleLogin(email, password)} sx={{ mt: 1 /* margin top */ }}>Log in</Button>
+            <Button onClick={() => handleLogin()} sx={{ mt: 1 /* margin top */ }}>Log in</Button>
             <Typography
                 endDecorator={<Link href="/sign-up">Sign up</Link>}
                 sx={{ fontSize: 'sm', alignSelf: 'center' }}

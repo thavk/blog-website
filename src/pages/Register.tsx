@@ -18,13 +18,19 @@ export const SignUpComponent = () => {
     const [error, setError] = React.useState(false);
     const navigate = useNavigate();
 
-    const handleSignUp = async (email: string, username: string, password: string, passwordConfirm: string): Promise<Register> => {
+    const handleSignUp = async (email: string, username: string, password: string, passwordConfirm: string): Promise<Register | undefined> => {
+            if (password !== passwordConfirm) {
+                setError(true);
+                setErrorMessage('Passwords do not match');
+                return;
+            };
+
             const response = await register(email, username, password);
 
             if (response.isError) {
                 setError(response.isError);
                 setErrorMessage(response.error);
-                return response;
+                return;
             };
 
             navigate('/login');
