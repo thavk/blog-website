@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import 'dotenv/config';
 import authRoutes from './routes/auth.js';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 
@@ -17,6 +18,8 @@ app.get('*', (req, res) => {
 
 app.use(express.static(path.join(__dirname, '../build')));
 */
+
+app.use(cookieParser());
 
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 
