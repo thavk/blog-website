@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import Typography from '@mui/joy/Typography';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
@@ -16,16 +16,45 @@ export const SignUpComponent = () => {
     const [passwordConfirm, setPasswordConfirm] = React.useState('');
     const [errorMessage, setErrorMessage] = React.useState('');
     const [error, setError] = React.useState(false);
+    const [capsLockOn, setCapsLockOn] = React.useState(false);
     const navigate = useNavigate();
 
-    const handleSignUp = async (email: string, username: string, password: string, passwordConfirm: string): Promise<Register | undefined> => {
-            if (password !== passwordConfirm) {
-                setError(true);
-                setErrorMessage('Passwords do not match');
+
+
+    const inputValidation = (user: string, mail: string, pwd: string, confirmPwd: string): boolean => {
+        const minPassword = 8;
+        const maxPassword = 60;
+        const maxEmail = 254;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!user || !mail || !pwd || !confirmPwd) return setErrorMessageReturn('Missing credentials');
+        if (pwd.length < minPassword || pwd.length > maxPassword) return setErrorMessageReturn('Password must be between 8 and 60 characters');
+        if (mail.length > maxEmail) return setErrorMessageReturn('Invalid input');
+        if (pwd !== confirmPwd) return setErrorMessageReturn('Passwords do not match');
+        if (!emailRegex.test(mail)) return setErrorMessageReturn('Invalid email');
+
+        return true;
+
+        function setErrorMessageReturn(msg: string) {
+            setError(true);
+            setErrorMessage(msg);
+            return false;
+        };
+    };
+
+    const handleSignUp = async (): Promise<Register | undefined> => {
+            const trimmedUser = username.trim();
+            const trimmedMail = email.trim();
+            const trimmedPwd = password.trim();
+            const trimmedConfirmPwd = passwordConfirm.trim();
+
+            const isValid = inputValidation(trimmedUser, trimmedMail, trimmedPwd, trimmedConfirmPwd);
+
+            if (!isValid) {
                 return;
             };
 
-            const response = await register(email, username, password);
+            const response = await register(trimmedUser, trimmedMail, trimmedPwd);
 
             if (response.isError) {
                 setError(response.isError);
@@ -40,8 +69,11 @@ export const SignUpComponent = () => {
 
     return (
         <div style={{
-            width: 'min(360px, 90vw)',
+            width: 'min(280px, 90vw)',
             margin: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
         }}>
             {error ?
                 <div style={{
@@ -100,7 +132,11 @@ export const SignUpComponent = () => {
                     placeholder="password"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
+                    onKeyUp={(e) => {
+                        setCapsLockOn(e.getModifierState("CapsLock"));
+                    }}
                 />
+                {capsLockOn && <p style={{ color: 'orange', fontSize: '12px', padding: 0, margin: 0 }}>Caps Lock is ON</p>}
             </FormControl>
             <FormControl>
                 <FormLabel>Confirm Password</FormLabel>
@@ -111,9 +147,13 @@ export const SignUpComponent = () => {
                     placeholder="password"
                     value={passwordConfirm}
                     onChange={(event) => setPasswordConfirm(event.target.value)}
+                    onKeyUp={(e) => {
+                        setCapsLockOn(e.getModifierState("CapsLock"));
+                    }}
                 />
+                {capsLockOn && <p style={{ color: 'orange', fontSize: '12px', padding: 0, margin: 0 }}>Caps Lock is ON</p>}
             </FormControl>
-            <Button onClick={() => handleSignUp(email, username, password, passwordConfirm)} sx={{ mt: 1 /* margin top */ }}>Sign up</Button>
+            <Button onClick={() => handleSignUp()} sx={{ mt: 1 /* margin top */ }}>Sign up</Button>
         </div>
     );
 };

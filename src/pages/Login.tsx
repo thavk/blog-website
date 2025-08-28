@@ -19,21 +19,21 @@ export const LoginComponent = () => {
     const navigate = useNavigate();
 
     const inputValidation = (user: string, pwd: string): boolean => {
-        if (!user || !pwd) {
-            setError(true);
-            setErrorMessage('Missing username/email or password');
-            return false;
-        } else if (pwd.length < 8 || pwd.length > 60) {
-            setError(true);
-            setErrorMessage('Password must be between 8 and 60 characters');
-            return false;
-        } else if (user.length > 254) {
-            setError(true);
-            setErrorMessage('Invalid input');
-            return false;
-        };
+        const minPassword = 8;
+        const maxPassword = 60;
+        const maxEmail = 254;
+
+        if (!user ||!pwd) return setErrorMessageReturn('Missing credentials');
+        if (pwd.length < minPassword || pwd.length > maxPassword) return setErrorMessageReturn('Password must be between 8 and 60 characters');
+        if (user.length > maxEmail) return setErrorMessageReturn('Invalid input');
 
         return true;
+
+        function setErrorMessageReturn(msg: string) {
+            setError(true);
+            setErrorMessage(msg);
+            return false;
+        };
     };
 
     const handleLogin = async (): Promise<Login | undefined> => {
@@ -64,6 +64,9 @@ export const LoginComponent = () => {
         <div style={{
             width: 'min(280px, 90vw)',
             margin: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
         }}>
             {error ?
                 <div style={{
@@ -84,11 +87,12 @@ export const LoginComponent = () => {
                     <h3>{errorMessage}</h3>
                 </div>
             : null}
-            <Typography level="h4" component="h1">
-                <b>Welcome!</b>
-
-            </Typography>
-            <Typography level="body-sm">Sign in to continue.</Typography>
+            <div style={{ margin : '15px' }}>
+                <Typography level="h4" component="h1">
+                    <b>Welcome!</b>
+                </Typography>
+                <Typography level="body-sm">Sign in to continue.</Typography>
+            </div>
             <FormControl>
                 <FormLabel>Email or Username</FormLabel>
                 <Input
