@@ -1,11 +1,11 @@
 import axiosInstance from '../api/axiosInstance.js';
 
-export async function login(email, password) {
+export async function login(loginInput, password) {
 
     try {
         const response = await axiosInstance.post(
             '/api/login',
-            { email, password },
+            { loginInput, password },
             { withCredentials: true }
         );
 
@@ -18,10 +18,14 @@ export async function login(email, password) {
 
 };
 
-export async function register(email, username, password) {
+export async function register(username, email, password) {
 
     try {
-        const response = await axiosInstance.post('/api/register', { email, username, password });
+        const response = await axiosInstance.post(
+            '/api/register',
+            { email, username, password },
+            { withCredentials: true }
+        );
 
         return response.data;
     } catch (error) {

@@ -1,26 +1,16 @@
-import jwt from 'jsonwebtoken';
 import axios from '../api/axios-instance.js';
 
-function generateToken(userId) {
-    return jwt.sign(
-        { userId },
-        process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_EXPIRES_IN},
-    );
-};
-
 export async function loginHandler(req, res) {
-    const { email, password } = req.body;
+    const { loginInput, password } = req.body;
 
-    if (!email || !password) {
-        return res.status(400).json({ error: 'Missing username or password' });
+    if (!loginInput || !password) {
+        return res.status(400).json({ error: 'Missing username/email or password' });
     };
 
 
     try {
-        const response = await axios.post('/auth/login', { email, password });
-
-        const token = generateToken(response.user_id);
+        const response = await axios.post('/auth/login', { loginInput, password });
+        const token = response.data.token;
 
         res.cookie('token', token, {
             httpOnly: true,
@@ -37,7 +27,7 @@ export async function loginHandler(req, res) {
 
 
 export async function registerHandler(req, res) {
-    const { email, password, username } = req.body;
+    const { email, username, password } = req.body;
 
     if (!email || !password || !username) {
         return res.status(400).json({ error: 'Missing username or password' });

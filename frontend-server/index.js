@@ -18,6 +18,7 @@ app.get('*', (req, res) => {
 
 app.use(express.static(path.join(__dirname, '../build')));
 */
+app.use(express.json());
 
 app.use(cookieParser());
 
