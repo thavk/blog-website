@@ -22,24 +22,23 @@ export const SignUpComponent = () => {
 
 
     const inputValidation = (user: string, mail: string, pwd: string, confirmPwd: string): boolean => {
-        const minPassword = 8;
-        const maxPassword = 60;
-        const maxEmail = 254;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        if (!user || !mail || !pwd || !confirmPwd) return setErrorMessageReturn('Missing credentials');
-        if (pwd.length < minPassword || pwd.length > maxPassword) return setErrorMessageReturn('Password must be between 8 and 60 characters');
-        if (mail.length > maxEmail) return setErrorMessageReturn('Invalid input');
-        if (pwd !== confirmPwd) return setErrorMessageReturn('Passwords do not match');
-        if (!emailRegex.test(mail)) return setErrorMessageReturn('Invalid email');
-
-        return true;
+        const usernamePattern = /^[a-zA-Z0-9_]{5,30}$/;
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,60}$/;
 
         function setErrorMessageReturn(msg: string) {
             setError(true);
             setErrorMessage(msg);
             return false;
         };
+
+        if (!user || !mail || !pwd || !confirmPwd) return setErrorMessageReturn('Missing credentials');
+        else if (pwd !== confirmPwd) return setErrorMessageReturn('Passwords do not match');
+        else if (!emailRegex.test(mail)) return setErrorMessageReturn('Invalid email');
+        else if (!usernamePattern.test(user)) return setErrorMessageReturn('Username must be between 5 and 30 characters. Only letters, numbers and \'_\' are allowed');
+        else if (!passwordPattern.test(pwd)) return setErrorMessageReturn('Password must be 8–60 characters long, must contain at least one lowercase letter, one uppercase letter, and one number');
+
+        return true;
     };
 
     const handleSignUp = async (): Promise<Register | undefined> => {
@@ -91,7 +90,7 @@ export const SignUpComponent = () => {
                     textAlign : 'center',
                 }}
                 >
-                    <h3>{errorMessage}</h3>
+                    <p>{errorMessage}</p>
                 </div>
             : null}
             <div style={{ margin : '15px' }}>
