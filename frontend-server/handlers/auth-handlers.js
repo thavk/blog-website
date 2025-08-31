@@ -12,7 +12,7 @@ export async function loginHandler(req, res) {
         const response = await axios.post('/auth/login', { loginInput, password });
         const token = response.data.token;
 
-        res.cookie('acessToken', token, {
+        res.cookie('accessToken', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',

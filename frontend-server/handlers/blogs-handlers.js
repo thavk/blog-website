@@ -1,7 +1,7 @@
 import axios from '../api/axios-instance.js';
 
 export async function getBlogsHandler(req, res) {
-    const token = req.cookies?.token;
+    const token = req.cookies?.accessToken;
 
     if (!token) {
         return res.status(401).json({ error: 'Invalid token' });
@@ -9,7 +9,6 @@ export async function getBlogsHandler(req, res) {
 
     try {
         const response = await axios.get('/blogs/blogs-list', { params: { token: token } });
-
 
         res.cookie('accessToken', response.data.token, {
             httpOnly: true,
