@@ -11,6 +11,11 @@ app.use(express.json());
 
 app.use(cors());
 
+app.use((req, res, next) => {
+  console.log('it works');
+  next();
+});
+
 app.use('/auth', authRoutes);
 
 app.use('/blogs', blogRoutes);
