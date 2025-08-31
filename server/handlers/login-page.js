@@ -60,7 +60,7 @@ export async function loginHandler(req, res) {
                 [refreshToken, expiry, user.user_id]);
         };
 
-        return res.json({ message: 'Login Successful', token: token, refreshToken: refreshToken });
+        return res.json({ message: 'Login Successful', token: token });
     } catch (error) {
         console.error('Login Error:', error);
         return res.status(500).json({ error: 'Internal Server Error' });

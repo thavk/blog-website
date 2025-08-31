@@ -4,7 +4,7 @@ export async function login(loginInput, password) {
 
     try {
         const response = await axiosInstance.post(
-            '/api/login',
+            '/api/auth/login',
             { loginInput, password },
             { withCredentials: true }
         );
@@ -22,7 +22,7 @@ export async function register(username, email, password) {
 
     try {
         const response = await axiosInstance.post(
-            '/api/register',
+            '/api/auth/register',
             { email, username, password },
             { withCredentials: true }
         );
