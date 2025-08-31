@@ -1,10 +1,9 @@
 import jwt from 'jsonwebtoken';
 import pool from '../config/db.js';
 
-export async function refreshMiddleware(req, res, next) {
+export default async function refreshMiddleware(req, res, next) {
     try {
-        const { token } = req.body;
-
+        const { token } = req.query || req.body || req.cookies;
         if (!token) {
             return res.status(401).json({ error: 'Invalid token' });
         };

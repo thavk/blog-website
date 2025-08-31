@@ -102,7 +102,35 @@ export async function registerHandler(req, res) {
     };
 };
 
+export async function logoutHandler(req, res) {
+    try {
+        const { token } = req.body;
 
+        if (!token) {
+            return res.status(401).json({ error: 'Invalid token' });
+        };
+
+        let decoded;
+        try {
+            decoded = jwt.verify(token, process.env.JWT_SECRET);
+        } catch (error) {
+            if (error.name === 'TokenExpiredError') {
+                decoded = jwt.decode(token);
+            } else {
+                return res.status(401).json({ error: 'Invalid token' });
+            };
+        };
+        await pool.query(
+            `UPDATE session
+             SET valid = false, refresh_token = NULL, expires_at = NULL WHERE user_id = $1`,
+            [decoded.userId]);
+
+        return res.json({ message: 'Logout Successful' });
+    } catch (error) {
+        console.error('Logout Error:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    };
+};
 
 
 
