@@ -10,9 +10,9 @@ export async function loginHandler(req, res) {
 
     try {
         const response = await axios.post('/auth/login', { loginInput, password });
-        const token = response.data.token;
+        const acessToken = response.data.token;
 
-        res.cookie('token', token, {
+        res.cookie('acessToken', acessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
@@ -38,6 +38,7 @@ export async function registerHandler(req, res) {
 
         return res.json({ message: 'Register Successful' });
     } catch (error) {
+        console.error('Register Error:', error);
         return res.status(500).json({ error: 'Internal Server Error' });
     };
 };
