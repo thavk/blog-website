@@ -6,6 +6,7 @@ import 'dotenv/config';
 import authRoutes from './routes/auth.js';
 import blogsRoutes from './routes/blogs.js';
 import cookieParser from 'cookie-parser';
+import refreshMiddleware from './middleware/refresh-middleware.js';
 
 const app = express();
 
@@ -27,7 +28,7 @@ app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 
 app.use('/api/auth', authRoutes);
 
-app.use('/api/blogs', blogsRoutes);
+app.use('/api/blogs', refreshMiddleware, blogsRoutes);
 
 app.listen(4000, '0.0.0.0', () => {
   console.log('Server running on http://localhost:4000');

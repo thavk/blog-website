@@ -24,9 +24,11 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "dev": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "dev": "concurrently -n REACT,FRONTEND,SERVER -c green,blue,magenta \"npm run dev:react\" \"npm run dev:frontend\" \"npm run dev:server\"",
+    "dev:react": "react-scripts start",
+    "dev:frontend": "npm run dev --prefix ./frontend-server",
+    "dev:server": "npm run dev --prefix ./server",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -54,6 +56,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/react": "^18.3.24",
-    "@types/react-dom": "^18.3.2"
+    "@types/react-dom": "^18.3.2",
+    "concurrently": "^9.2.1"
   }
 }
