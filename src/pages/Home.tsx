@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { BlogCard } from '../features/blog-display';
-
+import { getBlogsList } from '../components/blogs-list.js';
 
 
 export const HomeComponent = () => {
     useEffect(() => {
-
+        getBlogsList();
     }, []);
 
     return (
