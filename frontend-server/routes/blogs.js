@@ -3,6 +3,6 @@ import { getBlogsHandler } from '../handlers/blogs-handlers.js';
 
 const router = express.Router();
 
-router.get('/blogs', getBlogsHandler);
+router.get('/blogs-list', getBlogsHandler);
 
 export default router;
