@@ -1,6 +1,11 @@
 import pool from '../config/db.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
+
+function generateRefreshToken() {
+    return crypto.randomBytes(64).toString('hex');
+};
 
 function generateToken(userId) {
     return jwt.sign(
@@ -33,15 +38,29 @@ export async function loginHandler(req, res) {
 
         const user = result.rows[0];
 
-        const token = generateToken(user.user_id);
-
         const isValid = await bcrypt.compare(password, user.password);
         if (!isValid) {
             return res.status(401).json({ error: 'Invalid credentials' });
         };
 
+        const token = generateToken(user.user_id);
+        const refreshToken = generateRefreshToken();
+        const currSession = await pool.query('SELECT * FROM session WHERE user_id = $1', [user.user_id]);
+        const expiry = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
 
-        return res.json({ message: 'Login Successful', token: token });
+        if (currSession.rows.length === 0) {
+            await pool.query(
+                `INSERT INTO session (user_id, refresh_token, expires_at)
+                 VALUES ($1, $2, $3)`,
+                [user.user_id, refreshToken, expiry]);
+        } else {
+            await pool.query(
+                `UPDATE session SET (refresh_token, expires_at) = ($1, $2)
+                 WHERE user_id = $3`,
+                [refreshToken, expiry, user.user_id]);
+        };
+
+        return res.json({ message: 'Login Successful', token: token, refreshToken: refreshToken });
     } catch (error) {
         console.error('Login Error:', error);
         return res.status(500).json({ error: 'Internal Server Error' });
@@ -69,14 +88,14 @@ export async function registerHandler(req, res) {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const result = await pool.query(
+        await pool.query(
             `INSERT INTO users (email, password, username)
              VALUES ($1, $2, $3)
              RETURNING user_id, username`,
             [email, hashedPassword, username]
         );
 
-        return res.json({ message: 'Register Successful', userId: result.rows[0].user_id, username: result.rows[0].username });
+        return res.json({ message: 'Register Successful' });
     } catch (error) {
         console.error('Register Error:', error);
         res.status(500).json({ error: 'Internal Server Error' });
