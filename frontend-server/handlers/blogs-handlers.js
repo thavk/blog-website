@@ -1,4 +1,3 @@
-import jwt from 'jsonwebtoken';
 import axios from '../api/axios-instance.js';
 
 export async function getBlogsHandler(req, res) {
@@ -9,17 +8,17 @@ export async function getBlogsHandler(req, res) {
     };
 
     try {
-        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-        req.userId = decodedToken.userId;
-    } catch (error) {
-        return res.status(401).json({ error: 'Unauthorized' });
-    };
+        const response = await axios.get('/blogs/blogs-list', { params: { token: token } });
 
 
-    try {
-        const response = await axios.get('/blogs', { params: { userId: req.userId } });
+        res.cookie('accessToken', response.data.token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 60 * 60 * 1000 * 24 * 7 + 100000,
+        });
 
-        return res.json(response.data);
+        return res.json(response.data.blogList);
     } catch (error) {
         return res.status(500).json({ error: 'Internal Server Error' });
     };

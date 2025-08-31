@@ -10,17 +10,18 @@ export async function loginHandler(req, res) {
 
     try {
         const response = await axios.post('/auth/login', { loginInput, password });
-        const acessToken = response.data.token;
+        const token = response.data.token;
 
-        res.cookie('acessToken', acessToken, {
+        res.cookie('acessToken', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
-            maxAge: 60 * 60 * 1000,
+            maxAge: 60 * 60 * 1000 * 24 * 7 + 100000,
         });
 
         return res.json({ message: 'Login Successful' });
     } catch (error) {
+        console.error('Login Error:', error);
         return res.status(500).json({ error: 'Internal Server Error' });
     };
 };
