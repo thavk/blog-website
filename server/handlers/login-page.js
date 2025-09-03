@@ -7,11 +7,11 @@ function generateRefreshToken() {
     return crypto.randomBytes(64).toString('hex');
 };
 
-function generateToken(userId) {
+function generateToken(userId, secret) {
     return jwt.sign(
-        { userId },
+        { userId, secret },
         process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_EXPIRES_IN},
+        { expiresIn: process.env.JWT_EXPIRES_IN },
     );
 };
 export async function loginHandler(req, res) {
@@ -32,7 +32,7 @@ export async function loginHandler(req, res) {
         };
 
 
-        if (result.rows.length === 0) {
+        if (result.rows[0].length === 0) {
             return res.status(401).json({ error: 'Invalid credentials' });
         };
 
@@ -43,23 +43,24 @@ export async function loginHandler(req, res) {
             return res.status(401).json({ error: 'Invalid credentials' });
         };
 
-        const token = generateToken(user.user_id);
         const refreshToken = generateRefreshToken();
+        const refreshSecret = generateRefreshToken();
+        const token = generateToken(user.user_id, refreshSecret);
         const currSession = await pool.query('SELECT * FROM session WHERE user_id = $1', [user.user_id]);
         const expiry = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
 
-        if (currSession.rows.length === 0) {
+        if (!currSession.rows[0]) {
             await pool.query(
-                `INSERT INTO session (user_id, refresh_token, expires_at)
-                 VALUES ($1, $2, $3)`,
-                [user.user_id, refreshToken, expiry]);
+                `INSERT INTO session (user_id, refresh_token, expires_at, refresh_secret)
+                 VALUES ($1, $2, $3, $4)`,
+                [user.user_id, refreshToken, expiry, refreshSecret]);
+            console.log('here');
         } else {
             await pool.query(
-                `UPDATE session SET (refresh_token, expires_at) = ($1, $2)
-                 WHERE user_id = $3`,
-                [refreshToken, expiry, user.user_id]);
+                `UPDATE session SET (refresh_token, expires_at, refresh_secret, valid) = ($1, $2, $3, true)
+                 WHERE user_id = $4`,
+                [refreshToken, expiry, refreshSecret, user.user_id]);
         };
-
         return res.json({ message: 'Login Successful', token: token });
     } catch (error) {
         console.error('Login Error:', error);
@@ -122,7 +123,7 @@ export async function logoutHandler(req, res) {
         };
         await pool.query(
             `UPDATE session
-             SET valid = false, refresh_token = NULL, expires_at = NULL WHERE user_id = $1`,
+             SET valid = false, refresh_secret = NULL WHERE user_id = $1`,
             [decoded.userId]);
 
         return res.json({ message: 'Logout Successful' });
