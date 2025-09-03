@@ -43,3 +43,20 @@ export async function registerHandler(req, res) {
         return res.status(500).json({ error: 'Internal Server Error' });
     };
 };
+
+export async function logoutHandler(req, res) {
+    const { token } = req.body;
+
+    if (!token) {
+        return res.status(401).json({ error: 'Invalid token' });
+    };
+
+    try {
+        await axios.post('/auth/logout', { token });
+
+        return res.json({ message: 'Logout Successful' });
+    } catch (error) {
+        console.error('Logout Error:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    };
+};
