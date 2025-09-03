@@ -4,7 +4,6 @@ export const BlogCard = (props: any) => {
     const bull = (
 
         <Box
-
             component="span"
             sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
         >
@@ -19,7 +18,7 @@ export const BlogCard = (props: any) => {
         }}>
             <CardContent>
                 <Typography component="span" sx={{ color: 'text.secondary', fontSize: 14 }}>
-                    Word of the Day
+                    hi
                 </Typography>
 
                 <Typography component="h5">

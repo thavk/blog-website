@@ -6,7 +6,7 @@ import Button from '@mui/joy/Button';
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import { Outlet } from "react-router";
-
+import { LogoutButton } from '../features/logoutButton';
 
 function ModeToggle() {
     const { mode, setMode } = useColorScheme();
@@ -49,6 +49,7 @@ export default function HomePage(props: any) {
         <main>
             <CssVarsProvider {...props}>
                 <ModeToggle />
+                <LogoutButton />
                 <CssBaseline />
                 <Sheet
                     sx={{
