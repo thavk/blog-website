@@ -6,6 +6,7 @@ import 'dotenv/config';
 import authRoutes from './routes/auth.js';
 import blogsRoutes from './routes/blogs.js';
 import cookieParser from 'cookie-parser';
+import { generalLimiter, loginLimiter } from './middleware/rateLimiters.js';
 
 const app = express();
 
@@ -25,7 +26,9 @@ app.use(cookieParser());
 
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 
-app.use('/api/auth', authRoutes);
+app.use(generalLimiter);
+
+app.use('/api/auth', loginLimiter, authRoutes);
 
 app.use('/api/blogs', blogsRoutes);
 

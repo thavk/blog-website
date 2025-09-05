@@ -2,7 +2,6 @@ import axios from '../api/axios-instance.js';
 
 export async function getBlogsHandler(req, res) {
     const token = req.cookies?.accessToken;
-
     if (!token) {
         return res.status(401).json({ error: 'Invalid token' });
     };
@@ -19,7 +18,7 @@ export async function getBlogsHandler(req, res) {
         });
         return res.json(response.data.blogList);
     } catch (error) {
-        if (error.response?.data?.error === 'Duplicate Request' || 'Invalid token') {
+        if (error.response?.data?.error === 'Duplicate Request' || error.response?.data?.error === 'Invalid token') {
             return error;
         };
         return res.status(500).json({ error: 'Internal Server Error' });

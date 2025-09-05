@@ -48,8 +48,10 @@ export default function HomePage(props: any) {
     return (
         <main>
             <CssVarsProvider {...props}>
-                <ModeToggle />
-                <LogoutButton />
+                <div style={{ position: "relative", width: '100%' }}>
+                    <ModeToggle />
+                    <LogoutButton />
+                </div>
                 <CssBaseline />
                 <Sheet
                     sx={{

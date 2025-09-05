@@ -22,6 +22,7 @@ export async function blogsHandler(req, res) {
         if (error.response?.data?.error === 'Duplicate Request' || 'Invalid token') {
             return error;
         };
+        console.error('Blogs Handler Error:', error);
         return res.status(500).json({ error: 'Internal Server Error' });
     };
 };

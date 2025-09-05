@@ -9,6 +9,18 @@ import { useColorScheme } from '@mui/joy/styles';
 export function LogoutButton() {
     const { mode, setMode } = useColorScheme();
     const [mounted, setMounted] = React.useState(false);
+    const navigate = useNavigate();
+
+    const logoutHandler = async () => {
+        try {
+            const response = await logout();
+            console.log(response);
+            navigate('/login')
+        } catch (error) {
+            console.log(error);
+        };
+        return;
+    };
 
     // necessary for server-side rendering
     // because mode is undefined on the server
@@ -27,7 +39,14 @@ export function LogoutButton() {
         <Button
             variant="soft"
             color="neutral"
-            sx={{ width: 'max-content', marginBottom : '15px', left: '93%' }}
+            sx={{
+                width: 'max-content',
+                marginBottom : '15px',
+                position: "absolute",
+                top: 0,
+                right: 0,
+            }}
+            onClick={() => logoutHandler()}
         >
             Logout
         </Button>

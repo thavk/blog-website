@@ -1,15 +1,15 @@
 import axios from '../api/axios-instance.js';
 
 export async function loginHandler(req, res) {
-    const { loginInput, password } = req.body;
-
+    const { loginInput, password } = req.body
     if (!loginInput || !password) {
         return res.status(400).json({ error: 'Missing username/email or password' });
     };
 
 
     try {
-        const response = await axios.post('/auth/login', { loginInput, password });
+        const response = await axios.post('/auth/login', { loginInput, password })
+
         const token = response.data.token;
 
         res.cookie('accessToken', token, {
@@ -21,6 +21,10 @@ export async function loginHandler(req, res) {
 
         return res.json({ message: 'Login Successful' });
     } catch (error) {
+        if (error.response?.data?.error === 'Invalid credentials') {
+            console.log(error)
+            return res.status(401).json({ error: 'Invalid credentials' });
+        };
         console.error('Login Error:', error);
         return res.status(500).json({ error: 'Internal Server Error' });
     };
@@ -45,8 +49,7 @@ export async function registerHandler(req, res) {
 };
 
 export async function logoutHandler(req, res) {
-    const { token } = req.body;
-
+    const token = req.cookies?.accessToken;
     if (!token) {
         return res.status(401).json({ error: 'Invalid token' });
     };
@@ -54,6 +57,12 @@ export async function logoutHandler(req, res) {
     try {
         await axios.post('/auth/logout', { token });
 
+        res.cookie('accessToken', null, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            expires: new Date(0),
+        });
         return res.json({ message: 'Logout Successful' });
     } catch (error) {
         console.error('Logout Error:', error);

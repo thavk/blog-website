@@ -16,11 +16,9 @@ function generateToken(userId, secret) {
 };
 export async function loginHandler(req, res) {
     const { loginInput, password } = req.body;
-
     if (!loginInput || !password) {
         return res.status(400).json({ error: 'Missing username or password' });
     };
-
     try {
         let result;
         if (loginInput.includes('@')) {
@@ -30,9 +28,7 @@ export async function loginHandler(req, res) {
             const username = loginInput;
             result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
         };
-
-
-        if (result.rows[0].length === 0) {
+        if (!result.rows[0]) {
             return res.status(401).json({ error: 'Invalid credentials' });
         };
 
@@ -54,10 +50,9 @@ export async function loginHandler(req, res) {
                 `INSERT INTO session (user_id, refresh_token, expires_at, refresh_secret)
                  VALUES ($1, $2, $3, $4)`,
                 [user.user_id, refreshToken, expiry, refreshSecret]);
-            console.log('here');
         } else {
             await pool.query(
-                `UPDATE session SET (refresh_token, expires_at, refresh_secret, valid) = ($1, $2, $3, true)
+                `UPDATE session SET refresh_token = $1, expires_at = $2, refresh_secret = $3, valid = true
                  WHERE user_id = $4`,
                 [refreshToken, expiry, refreshSecret, user.user_id]);
         };

@@ -1,25 +1,16 @@
 import axiosInstance from '../api/axiosInstance.js';
 
 export async function login(loginInput, password) {
+    const response = await axiosInstance.post(
+        '/api/auth/login',
+        { loginInput, password },
+        { withCredentials: true }
+    );
 
-    try {
-        const response = await axiosInstance.post(
-            '/api/auth/login',
-            { loginInput, password },
-            { withCredentials: true }
-        );
-
-        return response.data;
-    } catch (error) {
-        const err = {isError: true, error: error.response?.data?.error || 'Something went wrong'};
-
-        return err;
-    };
-
+    return response;
 };
 
 export async function register(username, email, password) {
-
     try {
         const response = await axiosInstance.post(
             '/api/auth/register',
@@ -36,16 +27,10 @@ export async function register(username, email, password) {
 };
 
 export async function logout() {
-    try {
-        const response = await axiosInstance.post(
-            '/api/auth/logout',
-            { withCredentials: true }
-        );
-
-        return response.data;
-    } catch (error) {
-        const err = {isError: true, error: error.response?.data?.error || 'Something went wrong'};
-
-        return err;
-    };
+    const response = await axiosInstance.post(
+        '/api/auth/logout',
+        { },
+        { withCredentials: true }
+    );
+    return response.data;
 };

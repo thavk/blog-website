@@ -45,18 +45,17 @@ export const LoginComponent = () => {
         if (!isValid) {
             return;
         };
-
-        const response = await login(trimmedUser, trimmedPwd);
-
-        if (response.isError) {
-            setError(response.isError);
-            setErrorMessage(response.error);
+        try {
+            await login(trimmedUser, trimmedPwd);
+            navigate('/');
             return;
+        } catch (error: any) {
+            if (error.response?.data?.error === 'Invalid credentials') {
+                setError(true);
+                setErrorMessage(error.response?.data?.error);
+                return;
+            };
         };
-
-        navigate('/');
-
-        return response;
     };
 
 
