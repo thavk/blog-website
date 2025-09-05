@@ -43,7 +43,6 @@ export default async function refreshMiddleware(req, res, next) {
             };
         };
         req.token = validToken;
-
         req.userId = decoded.userId;
         next();
 
