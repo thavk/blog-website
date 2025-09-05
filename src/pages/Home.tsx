@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { BlogCard } from '../features/blog-display';
-import { getBlogsList } from '../components/blogs-list.js';
+import { BlogCard } from '../features/BlogDisplay';
+import { getBlogsList } from '../components/blogs-handlers.js';
 import { Blog } from '../api/auth/blogs';
 import { useNavigate } from 'react-router-dom';
 

@@ -5,6 +5,7 @@ import HomePage from './main-pages/home';
 import { LoginComponent } from './pages/Login';
 import { SignUpComponent } from './pages/Register';
 import { HomeComponent } from './pages/Home';
+import { BlogComponent } from './pages/Blog';
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
                             <Route index element={<HomeComponent/>}/>
                             <Route path='/login' element={<LoginComponent/>}/>
                             <Route path='/sign-up' element={<SignUpComponent/>}/>
+                            <Route path='/blog' element={<BlogComponent/>}/>
                         </Route>
                     </Routes>
                 </Router>
