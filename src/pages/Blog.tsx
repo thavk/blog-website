@@ -4,13 +4,15 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { MultiButton } from '../features/MultiButton';
 import { submitBlog } from '../components/blogs-handlers.js';
+import styles from '../styles/Blog.module.scss';
 
 export const BlogComponent = () => {
     const [quillValue, setQuillValue] = useState<string>('');
+    const [title, setTitle] = useState<string>('');
 
-    const submitHandler = async (val: string) => {
+    const submitHandler = async (title: string, content: string) => {
         try {
-            await submitBlog(val);
+            await submitBlog(title, content);
             return;
         } catch (error) {
             console.log(error);
@@ -20,8 +22,16 @@ export const BlogComponent = () => {
 
     return (
         <PageContainer sx={{ textAlign: 'center' }}>
-            <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column' }}>
-                <div className="text-editor">
+            <div className={styles.container}>
+                <form>
+                    <input
+                        type="text"
+                        placeholder="Title"
+                        onChange={(e) => setTitle(e.target.value)}
+                        className={styles.titleInput}
+                    />
+                </form>
+                <div className={styles.editorContainer}>
                     <ReactQuill
                         placeholder="Write your blog here..."
                         theme="snow"
@@ -29,12 +39,12 @@ export const BlogComponent = () => {
                         onChange={(value) => setQuillValue(value)}
                     />
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginTop: 16, flexDirection: 'row' }}>
-                    <div style={{ position: 'absolute', right: 10 }}>
+                <div className={styles.buttons}>
+                    <div style={{ }}>
                         <MultiButton content="Cancel" onClick={() => setQuillValue('')} />
                     </div>
-                    <div style={{ position: 'absolute', right: 100 }}>
-                        <MultiButton content="Submit" onClick={() => submitHandler(quillValue)} />
+                    <div style={{}}>
+                        <MultiButton content="Submit" onClick={() => submitHandler(title, quillValue)} />
                     </div>
                 </div>
             </div>

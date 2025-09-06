@@ -61,7 +61,7 @@ export default function HomePage(props: any) {
     };
 
     return (
-        <main>
+        <main style={{ height: '100vh', width: '100%' }}>
             <CssVarsProvider {...props}>
                 <div style={{ position: "relative", width: '100%' }}>
                     <ModeToggle />

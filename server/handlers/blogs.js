@@ -30,9 +30,9 @@ export async function blogsHandler(req, res) {
 export async function submitBlogHandler(req, res) {
     const { token, userId } = req;
     try {
-        const blog = req.body.blog;
-        const result = await pool.query('INSERT INTO blogs (user_id, title, content) VALUES ($1, $2, $3) RETURNING *',
-            [userId, blog.title, blog.content]);
+        const { blogTitle, blogContent } = req.body;
+        await pool.query('INSERT INTO blogs (user_id, title, content) VALUES ($1, $2, $3) RETURNING *',
+        [userId, blogTitle, blogContent]);
 
         return res.json({
             token: token,

@@ -36,8 +36,11 @@ export async function submitBlogHandler(req, res) {
     };
 
     try {
-        const blog = req.body.blog;
-        const response = await axios.post('/blogs/blog-submit', { blog: blog }, { params: { token: token } });
+        const { blogTitle, blogContent }  = req.body;
+        const response = await axios.post('/blogs/blog-submit',
+            { blogTitle: blogTitle, blogContent: blogContent },
+            { params: { token: token }
+            });
 
         setNewCookie(res, response.data.token);
         return res.json({message: 'Blog submitted successfully'});

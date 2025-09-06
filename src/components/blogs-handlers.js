@@ -5,7 +5,7 @@ export async function getBlogsList() {
     return response;
 };
 
-export async function submitBlog(blog) {
-    const response = await axiosInstance.post('api/blogs/blog-submit', { blog: blog }, { withCredentials: true });
+export async function submitBlog(blogTitle, blogContent) {
+    const response = await axiosInstance.post('api/blogs/blog-submit', { blogTitle: blogTitle, blogContent: blogContent }, { withCredentials: true });
     return response;
 };
