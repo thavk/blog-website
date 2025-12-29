@@ -24,5 +24,5 @@ A secure, high-performance blog system built with a **React client**, an **auth-
 
 ---
 
-## 🏛️ Architecture
+##  Architecture
 React (3000) → Frontend Proxy (4000, validates JWT from HttpOnly cookies) → Backend API (5000, no JWT/cookies exposed) → PostgreSQL
